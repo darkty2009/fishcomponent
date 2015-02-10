@@ -6,6 +6,8 @@ package fish.component
 	
 	import flash.utils.Dictionary;
 	
+	import starling.utils.HAlign;
+	
 	[State(name="normal", skin="fish.skins.button.ButtonNormalSkin")]
 	[State(name="over", skin="fish.skins.button.ButtonOverSkin")]
 	[State(name="down", skin="fish.skins.button.ButtonDownSkin")]
@@ -15,19 +17,29 @@ package fish.component
 		protected var _actions:Dictionary = new Dictionary();
 		protected var _label:Label;
 		
-		public function Button()
+		public function Button(width:Number = 82, height:Number = 22)
 		{
 			super();
 			
-			width = 82;
-			height = 22;
+			this.width = width;
+			this.height = height;
 			
 			_label = new Label();
-			_label.x = _label.y = 0;
+			_label.align = starling.utils.HAlign.LEFT;
 			
 			actions[fish.action.ButtonAction] = new ButtonAction(this);
 			
 			_foreground.addChild(_label);
+		}
+		
+		override protected function updateBasic():void
+		{
+			super.updateBasic();
+			
+			super.measure();
+			
+			_label.x = (width - _label.width) / 2;
+			_label.y = (height - _label.height) /2;
 		}
 		
 		public function set label(value:Label):void

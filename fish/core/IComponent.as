@@ -1,6 +1,6 @@
 package fish.core
 {
-	import flash.events.Event;
+	import starling.events.Event;
 
 	public interface IComponent
 	{

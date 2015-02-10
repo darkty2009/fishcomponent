@@ -5,10 +5,8 @@ package fish.action
 	import fish.metadata.resolveStyles;
 	import fish.skins.ISkinable;
 	
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
-	
-	import mx.events.PropertyChangeEvent;
+	import starling.events.EventDispatcher;
+	import starling.events.PropertyChangeEvent;
 	
 	[Listener(event="propertyChange", callback="propertiesChange")]
 	
@@ -18,7 +16,7 @@ package fish.action
 		
 		public function Action(value:Object = null)
 		{
-			super(this);
+			super();
 
 			target = value;
 			
@@ -41,9 +39,9 @@ package fish.action
 			// clear all instances and listeners
 		}
 		
-		[Bindable]
 		public function set target(value:Object):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "target", _target, value));
 			_target = value;
 		}
 		

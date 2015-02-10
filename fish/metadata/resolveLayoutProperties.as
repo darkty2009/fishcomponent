@@ -2,15 +2,14 @@ package fish.metadata
 {
 	import fish.logging.log;
 	
-	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
-	import mx.events.PropertyChangeEvent;
+	import starling.events.EventDispatcher;
 
-	public function resolveLayoutProperties(instance:IEventDispatcher, callback:Function):void
+	public function resolveLayoutProperties(instance:EventDispatcher, callback:Function):void
 	{
 		return;
 		

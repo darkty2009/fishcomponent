@@ -3,7 +3,6 @@ package fish.metadata
 	import fish.action.Action;
 	import fish.logging.log;
 	
-	import flash.events.IEventDispatcher;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;

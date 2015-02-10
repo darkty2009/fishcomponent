@@ -2,16 +2,18 @@ package fish.metadata
 {	
 	import fish.logging.log;
 	
-	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
-	import mx.events.PropertyChangeEvent;
+	import starling.events.PropertyChangeEvent;
+	import starling.events.EventDispatcher;
 	
-	public function resolveDefaultProperties(instance:IEventDispatcher, callback:Function):void
+	public function resolveDefaultProperties(instance:Object, callback:Function):void
 	{
+		instance = instance as EventDispatcher;
+		
 		var className:String = getQualifiedClassName(instance);
 		var xml:XML = TypeCache.getCache(className, TypeCache.DESCRIBE) as XML;
 		var needSetCache:Boolean = false;

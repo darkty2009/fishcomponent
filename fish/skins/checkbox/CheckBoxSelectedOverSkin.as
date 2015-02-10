@@ -4,7 +4,7 @@ package fish.skins.checkbox
 	
 	import flash.display.Shape;
 	
-	public class CheckBoxSelectedNormalSkin extends Shape implements ISkin
+	public class CheckBoxSelectedOverSkin extends Shape implements ISkin
 	{
 		public function update(widthValue:Number=-1, heightValue:Number=-1):ISkin
 		{

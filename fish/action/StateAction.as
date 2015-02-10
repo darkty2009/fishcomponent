@@ -1,7 +1,8 @@
 package fish.action
 {
-	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
+	
+	import starling.events.TouchEvent;
 	
 	[Action(event="mouseClick", callback="clickHandler")]
 	
@@ -14,7 +15,7 @@ package fish.action
 			super(value);
 		}
 		
-		public function clickHandler(event:MouseEvent):void
+		public function clickHandler(event:TouchEvent):void
 		{
 			_currentState = !_currentState;
 			
@@ -27,32 +28,34 @@ package fish.action
 			}
 		}
 		
-		override public function overHandler(event:MouseEvent):void
+		/*
+		override public function overHandler(event:TouchEvent):void
 		{
 			if(!_currentState) {
 				super.overHandler(event);
 			}
 		}
 		
-		override public function outHandler(event:MouseEvent):void
+		override public function outHandler(event:TouchEvent):void
 		{
 			if(!_currentState) {
 				super.outHandler(event);
 			}
 		}
 		
-		override public function downHandler(event:MouseEvent):void
+		override public function downHandler(event:TouchEvent):void
 		{
 			if(!_currentState) {
 				super.downHandler(event);
 			}
 		}
 		
-		override public function upHandler(event:MouseEvent):void
+		override public function upHandler(event:TouchEvent):void
 		{
 			if(!_currentState) {
 				super.upHandler(event);
 			}
 		}
+		*/
 	}
 }

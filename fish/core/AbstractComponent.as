@@ -10,21 +10,22 @@ package fish.core
 	import fish.skins.ISkinable;
 	import fish.utils.UniqueUtil;
 	
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.utils.Dictionary;
 	
-	import mx.events.PropertyChangeEvent;
+	import starling.display.DisplayObject;
+	import starling.display.DisplayObjectContainer;
+	import starling.display.Sprite;
+	import starling.events.Event;
+	import starling.events.PropertyChangeEvent;
 	
 	[Listener(event="propertyChange", callback="propertiesChange")]
 	[Listener(event="removedFromStage", callback="removeAll")]
 	[Listener(event="added", callback="added")]
-	[Listener(event="render", callback="validate")]
+	[Listener(event="enterFrame", callback="validate")]
 	
 	[State(name="normal", skin="fish.skins.component.ComponentNormalSkin")]
 	
-	public class AbstractComponent extends Sprite implements IDrawable, ISkinable, IMeasurable, IComponent
+	public class AbstractComponent extends DisplayObjectContainer implements IDrawable, ISkinable, IMeasurable, IComponent
 	{
 		public static const NESTLEVEL_NONE:uint = 0;
 		public static const NESTLEVEL_BASIC:uint = 1;
@@ -63,9 +64,9 @@ package fish.core
 		 */
 		protected var _states:Dictionary;
 		
-		protected var _background:Sprite;
-		protected var _foreground:Sprite;
-		protected var _mouseground:Sprite;
+		protected var _background:DisplayObjectContainer;
+		protected var _foreground:DisplayObjectContainer;
+		protected var _mouseground:DisplayObjectContainer;
 		protected var _enable:Boolean = true;
 		
 		public function AbstractComponent()
@@ -177,20 +178,18 @@ package fish.core
 			fish.metadata.resolveListener(this);
 		}
 		
-		override public function addChild(child:DisplayObject):DisplayObject
+		override public function addChild(child:DisplayObject):void
 		{
 			level = AbstractComponent.NESTLEVEL_ALL;
-			var re:DisplayObject = super.addChild(child);
+			super.addChild(child);
 			measure();
-			return re;
 		}
 		
-		override public function removeChild(child:DisplayObject):DisplayObject
+		override public function removeChild(child:DisplayObject, dispose:Boolean=false):void
 		{
 			level = AbstractComponent.NESTLEVEL_ALL;
-			var re:DisplayObject = super.removeChild(child);
+			super.removeChild(child, dispose);
 			measure();
-			return re;
 		}
 		
 		public function set currentState(value:ISkin):void
@@ -209,9 +208,9 @@ package fish.core
 		}
 		
 		[Property(value="0", level="basicProperties")]
-		[Bindable]
 		override public function set x(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "x", _x, value));
 			_x = value;
 		}
 		
@@ -221,9 +220,9 @@ package fish.core
 		}
 		
 		[Property(value="0", level="basicProperties")]
-		[Bindable]
 		override public function set y(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "y", _y, value));
 			_y = value;
 		}
 		
@@ -233,9 +232,9 @@ package fish.core
 		}
 		
 		[Property(value="400", level="advancedProperties")]
-		[Bindable]
 		override public function set width(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "width", _width, value));
 			_width = value;
 			measure();
 		}
@@ -246,9 +245,9 @@ package fish.core
 		}
 		
 		[Property(value="300", level="advancedProperties")]
-		[Bindable]
 		override public function set height(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "height", _height, value));
 			_height = value;
 			measure();
 		}
@@ -259,9 +258,9 @@ package fish.core
 		}
 		
 		[Property(value="80", level="basicProperties")]
-		[Bindable]
 		public function set minWidth(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "minWidth", _minWidth, value));
 			_minWidth = value;
 		}
 		
@@ -271,9 +270,9 @@ package fish.core
 		}
 		
 		[Property(value="2880", level="basicProperties")]
-		[Bindable]
 		public function set maxWidth(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "maxWidth", _maxWidth, value));
 			_maxWidth = value;
 		}
 		
@@ -283,9 +282,9 @@ package fish.core
 		}
 		
 		[Property(value="60", level="basicProperties")]
-		[Bindable]
 		public function set minHeight(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "minHeight", _minHeight, value));
 			_minHeight = value;
 		}
 		
@@ -295,9 +294,9 @@ package fish.core
 		}
 		
 		[Property(value="2880", level="basicProperties")]
-		[Bindable]
 		public function set maxHeight(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "maxHeight", _maxHeight, value));
 			_maxHeight = value;
 		}
 		
@@ -307,9 +306,9 @@ package fish.core
 		}
 		
 		[Property(value="0", level="advancedProperties")]
-		[Bindable]
 		public function set percentWidth(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "percentWidth", _percentWidth, value));
 			_percentWidth = value;
 			measure();
 		}
@@ -320,9 +319,9 @@ package fish.core
 		}
 		
 		[Property(value="0", level="advancedProperties")]
-		[Bindable]
 		public function set percentHeight(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "percentHeight", _percentHeight, value));
 			_percentHeight = value;
 			measure();
 		}
@@ -333,9 +332,9 @@ package fish.core
 		}
 		
 		[Property(value="1", level="basicProperties")]
-		[Bindable]
 		public override function set alpha(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "alpha", _alpha, value));
 			_alpha = value;
 		}
 		
@@ -357,7 +356,46 @@ package fish.core
 		
 		public function measure():void
 		{
+			// 终于想到这方法是拿 来干嘛的了
+			for(var i:Number = 0; i<this._background.numChildren;i++) {
+				try {
+					var child:AbstractComponent = this._background.getChildAt(0) as AbstractComponent;
+					if(child == null || !child.hasOwnProperty("width") || !child.hasOwnProperty("height"))
+						continue;
+						
+					if(child.width > this.width) {
+						child.x -= child.width - width;
+						child.width = width;
+					}
+					
+					if(child.height > this.height) {
+						child.y -= child.height - height;
+						child.height = height;
+					}
+				}catch(e:Error) {
+					fish.logging.log(1, this.name + " must be a non-null Object", this._background.name);
+				}
+			}
 			
+			for(var i:Number = 0; i<this._foreground.numChildren;i++) {
+				try {
+					var child:AbstractComponent = this._foreground.getChildAt(0) as AbstractComponent;
+					if(child == null || !child.hasOwnProperty("width") || !child.hasOwnProperty("height"))
+						continue;
+					
+					if(child.width > this.width) {
+						child.x -= child.width - width;
+						child.width = width;
+					}
+					
+					if(child.height > this.height) {
+						child.y -= child.height - height;
+						child.height = height;
+					}
+				}catch(e:Error) {
+					fish.logging.log(1, this.name + " must be a non-null Object", this._foreground.name);
+				}
+			}
 		}
 		
 		public function validate(event:Event = null):void
@@ -379,9 +417,21 @@ package fish.core
 		
 		public function added(event:Event = null):void
 		{	
+			if(checkEventTarget(event)) {
+				addLayers();
+			}
+		}
+		
+		protected function checkEventTarget(event:Event):Boolean
+		{
 			if(event != null && event.target !== this)
-				return;
+				return false;
 			
+			return true;
+		}
+		
+		private function addLayers():void
+		{
 			_currentState = getStateStyle("normal") as ISkin;
 			
 			super.addChild(_background);
@@ -391,9 +441,14 @@ package fish.core
 			_background.addChild(_currentState.update(_width, _height) as DisplayObject);
 		}
 		
-		public function removeAll(event:Event = null):void
+		public function removeAll(event:* = null):void
 		{
 			fish.metadata.resolveListener(this, true);
+		}
+		
+		public function toString():String
+		{
+			return name;
 		}
 	}
 }

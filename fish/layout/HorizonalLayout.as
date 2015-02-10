@@ -3,6 +3,8 @@ package fish.layout
 	import fish.container.Container;
 	import fish.core.AbstractComponent;
 	
+	import starling.events.PropertyChangeEvent;
+	
 	public class HorizonalLayout extends Layout
 	{	
 		// do the resolve of LayoutProperty
@@ -11,9 +13,9 @@ package fish.layout
 		protected var _horizonalAlign:String = HorizonalAlign.LEFT;
 		
 		[LayoutProperty(name="layout.top", measure="true")]
-		[Bindable]
 		public function set verticalAlign(value:String):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "verticalAlign", _verticalAlign, value));
 			_verticalAlign = value;
 		}
 		
@@ -23,9 +25,9 @@ package fish.layout
 		}
 		
 		[LayoutProperty(name="layout.top", measure="true")]
-		[Bindable]
 		public function set horizonalAlign(value:String):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "horizonalAlign", _horizonalAlign, value));
 			_horizonalAlign = value;
 		}
 		
@@ -47,7 +49,6 @@ package fish.layout
 				var length:Number = target.numChildren;
 				var last:AbstractComponent = null;
 				for(var i:Number = 0;i < length; i++) {
-					trace(target.getChildAt(0));
 					var current:AbstractComponent = target.getChildAt(i) as AbstractComponent;
 					if(current == null)
 						continue;

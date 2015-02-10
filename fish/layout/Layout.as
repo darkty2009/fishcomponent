@@ -4,10 +4,8 @@ package fish.layout
 	import fish.metadata.resolveLayoutProperties;
 	import fish.metadata.resolveListener;
 	
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
-	
-	import mx.events.PropertyChangeEvent;
+	import starling.events.EventDispatcher;
+	import starling.events.PropertyChangeEvent;
 	
 	[Listener(event="propertyChange", callback="propertiesChange")]
 	
@@ -56,9 +54,9 @@ package fish.layout
 		}
 		
 		[LayoutProperty(name="layout.top", measure="true")]
-		[Bindable]
 		public function set top(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "top", _top, value));
 			_top = value;
 		}
 
@@ -68,9 +66,9 @@ package fish.layout
 		}
 		
 		[LayoutProperty(name="layout.bottom", measure="true")]
-		[Bindable]
 		public function set bottom(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "bottom", _bottom, value));
 			_bottom = value;
 		}
 
@@ -80,9 +78,9 @@ package fish.layout
 		}
 		
 		[LayoutProperty(name="layout.left", measure="true")]
-		[Bindable]
 		public function set left(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "left", _left, value));
 			_left = value;
 		}
 
@@ -92,9 +90,9 @@ package fish.layout
 		}
 		
 		[LayoutProperty(name="layout.right", measure="true")]
-		[Bindable]
 		public function set right(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "right", _right, value));
 			_right = value;
 		}
 
@@ -104,9 +102,9 @@ package fish.layout
 		}
 		
 		[LayoutProperty(name="layout.gap", measure="true")]
-		[Bindable]
 		public function set gap(value:Number):void
 		{
+			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "gap", _gap, value));
 			_gap = value;
 		}
 	}
