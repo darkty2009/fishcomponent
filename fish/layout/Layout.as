@@ -1,111 +1,50 @@
 package fish.layout
 {
-	import fish.core.AbstractComponent;
-	import fish.metadata.resolveLayoutProperties;
-	import fish.metadata.resolveListener;
+	import fish.events.ResizeEvent;
 	
-	import starling.events.EventDispatcher;
-	import starling.events.PropertyChangeEvent;
-	
-	[Listener(event="propertyChange", callback="propertiesChange")]
-	
-	public class Layout extends EventDispatcher implements ILayout
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.geom.Rectangle;
+
+	public class Layout
 	{
-		private var _target:AbstractComponent;
+		private var _target:DisplayObjectContainer;
 		
-		private var _top:Number = 10;
-		private var _bottom:Number = 10;
-		private var _left:Number = 10;
-		private var _right:Number = 10;
-		private var _gap:Number = 10;
-		
-		protected var _lock:Boolean = false;
-		
-		public function set target(value:AbstractComponent):void
-		{
-			_target = value;
-		}
-		
-		public function get target():AbstractComponent
+		public function get target():DisplayObjectContainer
 		{
 			return _target;
 		}
 		
-		public function Layout(value:AbstractComponent = null)
+		public var autoLayout:Boolean = false;
+		
+		public function Layout(target:*)
 		{
-			target = value;
+			if(target && target is DisplayObjectContainer) {
+				this.target = target;
+			}
+		}
+		
+		public function set target(value:DisplayObjectContainer):void
+		{
+			if(_target) {
+				_target.removeEventListener(ResizeEvent.CHILD_RESIZE, childResizeHandler);
+			}
 			
-			fish.metadata.resolveListener(this);
-		}
-		
-		public function propertiesChange(event:PropertyChangeEvent):void
-		{
-			measure();
-		}
-		
-		public function measure():void
-		{	
+			_target = value;
 			
-		}
-
-		public function get top():Number
-		{
-			return _top;
+			if(_target) {
+				_target.addEventListener(ResizeEvent.CHILD_RESIZE, childResizeHandler);
+			}
 		}
 		
-		[LayoutProperty(name="layout.top", measure="true")]
-		public function set top(value:Number):void
+		protected function childResizeHandler(event:ResizeEvent):void
 		{
-			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "top", _top, value));
-			_top = value;
+			execute(event.child, event.oldValue, event.newValue);
 		}
 
-		public function get bottom():Number
+		public function execute(child:DisplayObject, oldValue:Rectangle, newValue:Rectangle):void
 		{
-			return _bottom;
-		}
-		
-		[LayoutProperty(name="layout.bottom", measure="true")]
-		public function set bottom(value:Number):void
-		{
-			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "bottom", _bottom, value));
-			_bottom = value;
-		}
-
-		public function get left():Number
-		{
-			return _left;
-		}
-		
-		[LayoutProperty(name="layout.left", measure="true")]
-		public function set left(value:Number):void
-		{
-			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "left", _left, value));
-			_left = value;
-		}
-
-		public function get right():Number
-		{
-			return _right;
-		}
-		
-		[LayoutProperty(name="layout.right", measure="true")]
-		public function set right(value:Number):void
-		{
-			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "right", _right, value));
-			_right = value;
-		}
-
-		public function get gap():Number
-		{
-			return _gap;
-		}
-		
-		[LayoutProperty(name="layout.gap", measure="true")]
-		public function set gap(value:Number):void
-		{
-			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "gap", _gap, value));
-			_gap = value;
+			
 		}
 	}
 }

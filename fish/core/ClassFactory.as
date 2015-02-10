@@ -1,10 +1,5 @@
 package fish.core
 {
-	import fish.skins.button.ButtonDownSkin;
-	import fish.skins.button.ButtonNormalSkin;
-	import fish.skins.button.ButtonOverSkin;
-	import fish.skins.component.ComponentNormalSkin;
-
 	public class ClassFactory
 	{
 		protected var generator:Class;
@@ -37,14 +32,6 @@ package fish.core
 			}
 			
 			return instance;
-		}
-		
-		private static function includeClasses():void
-		{
-			fish.skins.component.ComponentNormalSkin;
-			fish.skins.button.ButtonNormalSkin;
-			fish.skins.button.ButtonOverSkin;
-			fish.skins.button.ButtonDownSkin;
 		}
 	}
 }

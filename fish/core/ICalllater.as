@@ -5,7 +5,7 @@ package fish.core
 
 	public interface ICalllater
 	{
-		function callLater(method:Function):void;
+		function callLater(name:String, method:Function):void;
 		function callLaterHandler(event:Event):void;
 	}
 }

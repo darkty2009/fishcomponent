@@ -1,86 +1,106 @@
 package fish.action
-{
-	import fish.logging.log;
-	import fish.metadata.resolveActionListener;
-	import fish.metadata.resolveListener;
+{	
+	import fish.display.FMovieClip;
+	import fish.events.DataChangeEvent;
 	
-	import flash.utils.Dictionary;
-	
-	import starling.display.DisplayObject;
-	import starling.events.Touch;
-	import starling.events.TouchEvent;
-	import starling.events.TouchPhase;
-	
-	[Action(event="touch", callback="touchHandler")]
+	import flash.events.Event;
+	import flash.events.IEventDispatcher;
+	import flash.events.MouseEvent;
 	
 	public class ButtonAction extends Action
 	{
-		protected var _states:Dictionary;
-		
-		public function ButtonAction(value:Object=null)
+		public function ButtonAction(target:IEventDispatcher=null)
 		{
-			super(value);
+			super(target);
 		}
 		
-		override public function set target(value:Object):void
+		override public function regist():IAction
 		{
-			if(target != null) {
-				stop();
-			}
+			addEvent();
 			
-			super.target = value;
-			_states = value.states;
-			start();
-		}
-		
-		override public function start():void
-		{
-			target.touchable = true;
-			fish.metadata.resolveActionListener(this, target);
-		}
-		
-		override public function stop():void
-		{
-			fish.metadata.resolveActionListener(this, target, true);
-		}
-		
-		public function touchHandler(event:TouchEvent):void
-		{
-			var touch:Touch = event.getTouch(target as DisplayObject);
+			try {
+				target["target"].buttonMode = true;
+				target["target"].mouseEnable = true;
+			}catch(e:Error) {}
 			
-			if(touch == null) {
-				target.currentState = _states["normal"];
-				return;
-			}
+			FMovieClip(target).gotoAndStop("out");
 			
-			if(touch.phase == starling.events.TouchPhase.HOVER) {
-				target.currentState = _states["over"];
+			return this;
+		}
+		
+		override public function unregist():IAction
+		{
+			removeEvent();
+			
+			try {
+				target["target"].buttonMode = false;
+				target["target"].mouseEnable = false;
+			}catch(e:Error) {}
+			
+			return this;
+		}
+		
+		protected function addEvent():void
+		{
+			target["target"].addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+			target["target"].addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+			target["target"].addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+			target["target"].addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+			target.addEventListener("enableChange", changeHandler);
+		}
+		
+		protected function removeEvent():void
+		{
+			target["target"].removeEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
+			target["target"].removeEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
+			target["target"].removeEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+			target["target"].removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+			target.removeEventListener("enableChange", changeHandler);
+		}
+		
+		protected function mouseOverHandler(event:MouseEvent):void
+		{
+			if(target["enable"])
+				try {
+					FMovieClip(target).gotoAndStop("over");
+				}catch(e:Error) {}
+		}
+		
+		protected function mouseOutHandler(event:MouseEvent):void
+		{
+			if(target["enable"])
+				try {
+					FMovieClip(target).gotoAndStop("out");
+				}catch(e:Error) {}
+		}
+		
+		protected function mouseDownHandler(event:MouseEvent):void
+		{
+			if(target["enable"])
+				try {
+					FMovieClip(target).gotoAndStop("down");
+				}catch(e:Error) {}
+		}
+		
+		protected function mouseUpHandler(event:MouseEvent):void
+		{
+			if(target["enable"])
+				try {
+					FMovieClip(target).gotoAndStop("over");
+				}catch(e:Error) {}
+		}
+		
+		public function changeHandler(event:DataChangeEvent):void
+		{
+			if(event.newValue == true) {
+				try {
+					FMovieClip(target).gotoAndStop("disable");
+				}catch(e:Error) {}
+			}else {
+				try {
+					FMovieClip(target).gotoAndStop("out");
+				}catch(e:Error) {}
 			}
-			if(touch.phase == starling.events.TouchPhase.ENDED) {
-				target.currentState = _states["normal"];
-			}
 		}
-		
-		/*
-		public function overHandler(event:TouchEvent):void
-		{
-			target.currentState = _states["over"];
-		}
-		
-		public function outHandler(event:TouchEvent):void
-		{
-			target.currentState = _states["normal"];
-		}
-		
-		public function downHandler(event:TouchEvent):void
-		{
-			target.currentState = _states["down"];
-		}
-		
-		public function upHandler(event:TouchEvent):void
-		{
-			target.currentState = _states["over"];
-		}
-		*/
 	}
 }

@@ -1,53 +1,42 @@
 package fish.action
 {
-	import fish.metadata.resolveDefaultProperties;
-	import fish.metadata.resolveListener;
-	import fish.metadata.resolveStyles;
-	import fish.skins.ISkinable;
-	
-	import starling.events.EventDispatcher;
-	import starling.events.PropertyChangeEvent;
-	
-	[Listener(event="propertyChange", callback="propertiesChange")]
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	
 	public class Action extends EventDispatcher implements IAction
 	{
-		protected var _target:Object;
+		protected var _target:IEventDispatcher;
+		protected var _parameters:Array;
 		
-		public function Action(value:Object = null)
+		public function Action(target:IEventDispatcher, ...parameters)
 		{
 			super();
-
-			target = value;
-			
-			fish.metadata.resolveDefaultProperties(this, propertiesChange);
-			fish.metadata.resolveListener(this);
+			_target = target;
+			_parameters = parameters || [];
 		}
 		
-		public function propertiesChange(event:PropertyChangeEvent):void
+		public function get target():IEventDispatcher
 		{
-			// nothing to do
+			return _target;
 		}
 		
-		public function start():void
+		public function set target(value:IEventDispatcher):void
 		{
-			// working with the Target
-		}
-		
-		public function stop():void
-		{
-			// clear all instances and listeners
-		}
-		
-		public function set target(value:Object):void
-		{
-			dispatchEvent(PropertyChangeEvent.createUpdateEvent(this, "target", _target, value));
 			_target = value;
 		}
 		
-		public function get target():Object
+		public function regist():IAction
 		{
-			return _target;
+			// Need to override
+			
+			return this;
+		}
+		
+		public function unregist():IAction
+		{
+			// Need to override
+			
+			return this;
 		}
 	}
 }

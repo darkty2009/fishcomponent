@@ -1,11 +1,15 @@
 package fish.action
 {
+	import fish.display.FDisplayObject;
+	
+	import flash.events.IEventDispatcher;
+
 	public interface IAction
 	{
-		function set target(value:Object):void;
-		function get target():Object;
+		function get target():IEventDispatcher;
+		function set target(value:IEventDispatcher):void;
 		
-		function start():void;
-		function stop():void;
+		function regist():IAction;
+		function unregist():IAction;
 	}
 }

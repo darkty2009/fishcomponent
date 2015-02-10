@@ -1,7 +1,5 @@
 package fish.metadata
 {
-	import fish.core.AbstractComponent;
-	
 	import flash.utils.Dictionary;
 
 	public class TypeCache
